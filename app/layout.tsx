@@ -13,8 +13,14 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Wifix402 — Pay-per-session WiFi",
-  description: "Programmable internet access. x402 + ERC-7710 + 1Shot permissionless relayer. Gas paid in USDC.",
+  title: "Wifix402 — Pay-Per-Use WiFi on Base",
+  description: "Programmable WiFi access powered by x402 + ERC-7710 delegation + 1Shot permissionless relayer. No login. No subscription. Pay in USDC.",
+  keywords: ["wifi", "x402", "erc-7710", "1shot", "base", "usdc", "web3", "defi", "metamask"],
+  openGraph: {
+    title: "Wifix402 — Pay-Per-Use WiFi",
+    description: "x402 + ERC-7710 + 1Shot relay. WiFi for cents, paid in USDC.",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
