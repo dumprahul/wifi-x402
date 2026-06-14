@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/supabase';
 import { activateSession } from '@/lib/sessions';
+import { finalizeTopupSession, getTopupSessionByTaskId } from '@/lib/topup-sessions';
 import { allowIP } from '@/lib/firewall';
 
 /*
@@ -42,6 +43,18 @@ export async function POST(req: NextRequest) {
   });
 
   if (isConfirmed) {
+    // Check if this is a topup stop confirmation first
+    const topupSession = await getTopupSessionByTaskId(taskId);
+    if (topupSession) {
+      const finalized = await finalizeTopupSession(taskId, txHash);
+      if (finalized) {
+        console.log(`[Webhook] Topup session finalized: ${finalized.id} charged=${finalized.actual_charged_atoms} atoms tx=${txHash}`);
+        await db().from('webhook_events').update({ processed: true }).eq('task_id', taskId);
+        return NextResponse.json({ received: true, action: 'topup_finalized', sessionId: finalized.id, chargedAtoms: finalized.actual_charged_atoms });
+      }
+    }
+
+    // Otherwise it's a plan-based session activation
     const session = await activateSession(taskId, txHash);
     if (session) {
       console.log(`[Webhook] Session activated: ${session.id} IP=${session.ip}`);

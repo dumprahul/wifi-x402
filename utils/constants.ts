@@ -48,3 +48,16 @@ export const PLANS = [
 ] as const;
 
 export type PlanId = typeof PLANS[number]['id'];
+
+// Top-Up pricing: $0.001 USDC per minute = 1000 atoms/min
+export const TOPUP_RATE_PER_MINUTE_ATOMS = 1000n; // 0.001 USDC in atoms
+export const TOPUP_RATE_PER_SECOND_ATOMS = TOPUP_RATE_PER_MINUTE_ATOMS / 60n; // ~16 atoms/sec
+
+export const TOPUP_OPTIONS = [
+  { minutes: 5,  label: '5 min',  maxUsdc: '0.005', maxAtoms: '5000' },
+  { minutes: 10, label: '10 min', maxUsdc: '0.010', maxAtoms: '10000' },
+  { minutes: 30, label: '30 min', maxUsdc: '0.030', maxAtoms: '30000' },
+  { minutes: 60, label: '1 hour', maxUsdc: '0.060', maxAtoms: '60000' },
+] as const;
+
+export type TopupOption = typeof TOPUP_OPTIONS[number];
