@@ -81,12 +81,10 @@ export async function POST(req: NextRequest) {
   const started = await startTopupSession(sessionId);
   if (!started) return NextResponse.json({ error: 'Failed to start session (state conflict)' }, { status: 409 });
 
-  // Enable firewall rule
-  try {
-    await allowIP(ip, sessionId, 'topup_start');
-  } catch (err) {
-    console.warn('[Topup/start] pfctl allowIP failed (non-fatal):', err);
-  }
+  // Enable firewall rule — fire and forget, never block the HTTP response
+  allowIP(ip, sessionId, 'topup_start').catch(err =>
+    console.warn('[Topup/start] pfctl allowIP failed (non-fatal):', err),
+  );
 
   console.log(`[Topup] Session ${sessionId} STARTED ip=${ip} maxSec=${started.max_duration_seconds}`);
 

@@ -103,12 +103,10 @@ export async function POST(req: NextRequest) {
   // Mark DB as stopping
   await markTopupStopping(sessionId, taskId, actualSeconds, chargeAtoms.toString());
 
-  // Block IP immediately — don't wait for webhook
-  try {
-    await blockIP(session.ip, sessionId, 'topup_stop');
-  } catch (err) {
-    console.warn('[Topup/stop] pfctl blockIP failed (non-fatal):', err);
-  }
+  // Block IP immediately — fire and forget, never block the HTTP response
+  blockIP(session.ip, sessionId, 'topup_stop').catch(err =>
+    console.warn('[Topup/stop] pfctl blockIP failed (non-fatal):', err),
+  );
 
   const actualUsdcHuman = (Number(chargeAtoms) / 1_000_000).toFixed(6);
 
