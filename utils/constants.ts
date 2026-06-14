@@ -1,30 +1,28 @@
-// Base Sepolia testnet
-export const CHAIN_ID = 84532;
-export const CHAIN_ID_HEX = '0x14a34';
-export const RPC_URL = 'https://sepolia.base.org';
+// Base mainnet — required by 1Shot relayer
+export const CHAIN_ID = parseInt(process.env.CHAIN_ID || '84532');
+export const CHAIN_ID_HEX = '0x14a34'; // Base Sepolia for now; switch to '0x2105' for mainnet
+export const RPC_URL = process.env.RPC_URL || 'https://sepolia.base.org';
 
-// USDC on Base Sepolia
-export const USDC_ADDRESS = '0x036CbD53842c5426634e7929541eC2318f3dCF7e';
+// USDC on Base Sepolia (testnet)
+// Switch to 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913 for Base mainnet
+export const USDC_ADDRESS = (process.env.USDC_ADDRESS || '0x036CbD53842c5426634e7929541eC2318f3dCF7e') as `0x${string}`;
 export const USDC_DECIMALS = 6;
 
-// Where payments go (set via env for demo)
-export const RECEIVER_WALLET = process.env.HOTSPOT_WALLET || '0x0000000000000000000000000000000000000001';
+// Where payments go
+export const RECEIVER_WALLET = (process.env.HOTSPOT_WALLET || '0x14a825D93c0592DB35f3CE964Fb48DB0ad98cF05') as `0x${string}`;
 
-// 1Shot relayer
-export const ONE_SHOT_RELAYER_URL = 'https://relayer.1shotapi.com/relayers';
+// x402 resource URL (this server)
+export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+export const WEBHOOK_URL = `${BASE_URL}/api/webhook/1shot`;
 
-// Webhook URL for 1Shot to call back
-export const WEBHOOK_URL = process.env.NEXT_PUBLIC_BASE_URL
-  ? `${process.env.NEXT_PUBLIC_BASE_URL}/api/webhook/1shot`
-  : 'http://localhost:3000/api/webhook/1shot';
-
-// WiFi access plans
+// WiFi plans
 export const PLANS = [
   {
     id: 'plan-1h',
     name: '1 Hour',
     duration_seconds: 3600,
     price_usdc: '0.01',
+    price_units: '10000', // 0.01 * 1e6
     emoji: '⚡',
     description: 'Quick session',
   },
@@ -33,6 +31,7 @@ export const PLANS = [
     name: '1 Day',
     duration_seconds: 86400,
     price_usdc: '0.05',
+    price_units: '50000',
     emoji: '🌙',
     description: 'All day access',
   },
@@ -41,6 +40,7 @@ export const PLANS = [
     name: '1 Week',
     duration_seconds: 604800,
     price_usdc: '0.20',
+    price_units: '200000',
     emoji: '🚀',
     description: 'Best value',
     popular: true,
