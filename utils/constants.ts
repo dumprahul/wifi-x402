@@ -1,24 +1,50 @@
-export const CHAIN_ID = process.env.CHAIN_ID || '8453'; // Base mainnet
-export const RPC_URL = process.env.RPC_URL || 'https://mainnet.base.org';
-export const USDC_ADDRESS = process.env.USDC_ADDRESS || '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913';
-export const HOTSPOT_WALLET = process.env.HOTSPOT_WALLET || '0x0000000000000000000000000000000000000001';
+// Base Sepolia testnet
+export const CHAIN_ID = 84532;
+export const CHAIN_ID_HEX = '0x14a34';
+export const RPC_URL = 'https://sepolia.base.org';
 
-export const ONE_SHOT_RELAYER_URL = process.env.ONE_SHOT_RELAYER_URL || 'https://relayer.1shotapi.com/relayers';
-export const ONE_SHOT_RELAYER_ADDRESS = process.env.ONE_SHOT_RELAYER_ADDRESS || '0x0000000000000000000000000000000000000002';
-export const ONE_SHOT_WEBHOOK_SECRET = process.env.ONE_SHOT_WEBHOOK_SECRET || '';
+// USDC on Base Sepolia
+export const USDC_ADDRESS = '0x036CbD53842c5426634e7929541eC2318f3dCF7e';
+export const USDC_DECIMALS = 6;
 
+// Where payments go (set via env for demo)
+export const RECEIVER_WALLET = process.env.HOTSPOT_WALLET || '0x0000000000000000000000000000000000000001';
+
+// 1Shot relayer
+export const ONE_SHOT_RELAYER_URL = 'https://relayer.1shotapi.com/relayers';
+
+// Webhook URL for 1Shot to call back
 export const WEBHOOK_URL = process.env.NEXT_PUBLIC_BASE_URL
   ? `${process.env.NEXT_PUBLIC_BASE_URL}/api/webhook/1shot`
   : 'http://localhost:3000/api/webhook/1shot';
 
-export const DEFAULT_PLANS = [
-  { name: '5 Minutes', duration_seconds: 300, price_usdc: '0.005' },
-  { name: '30 Minutes', duration_seconds: 1800, price_usdc: '0.02' },
-  { name: '24 Hours', duration_seconds: 86400, price_usdc: '0.10', is_recurring: true },
-];
+// WiFi access plans
+export const PLANS = [
+  {
+    id: 'plan-1h',
+    name: '1 Hour',
+    duration_seconds: 3600,
+    price_usdc: '0.01',
+    emoji: '⚡',
+    description: 'Quick session',
+  },
+  {
+    id: 'plan-1d',
+    name: '1 Day',
+    duration_seconds: 86400,
+    price_usdc: '0.05',
+    emoji: '🌙',
+    description: 'All day access',
+  },
+  {
+    id: 'plan-1w',
+    name: '1 Week',
+    duration_seconds: 604800,
+    price_usdc: '0.20',
+    emoji: '🚀',
+    description: 'Best value',
+    popular: true,
+  },
+] as const;
 
-export const USDC_DECIMALS = 6;
-
-// ERC-7710/x402 constants
-export const X402_VERSION = '1';
-export const PAYMENT_SCHEME = 'erc7710';
+export type PlanId = typeof PLANS[number]['id'];

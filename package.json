@@ -11,6 +11,8 @@
   "dependencies": {
     "@metamask/smart-accounts-kit": "^1.6.0",
     "@supabase/supabase-js": "^2.108.1",
+    "@x402/core": "^2.15.0",
+    "@x402/fetch": "^2.15.0",
     "next": "16.2.9",
     "react": "19.2.4",
     "react-dom": "19.2.4",
