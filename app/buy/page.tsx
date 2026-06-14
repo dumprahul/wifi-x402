@@ -166,16 +166,23 @@ export default function BuyPage() {
   useEffect(() => {
     if (topupStep.type !== 'stopping') return;
     const { sessionId, actualSeconds, actualUsdc } = topupStep;
+    // Poll every 5s — status endpoint calls 1Shot directly each time (no webhook needed)
     const stopPoll = setInterval(async () => {
       try {
         const res = await fetch(`/api/topup/status/${sessionId}`);
-        const d = await res.json() as { state?: string; transactionHash?: string };
+        const d = await res.json() as { state?: string; transactionHash?: string; actualChargedUsdc?: string };
         if (d.state === 'stopped') {
           clearInterval(stopPoll);
-          setTopupStep({ type: 'receipt', sessionId, actualSeconds, actualUsdc, txHash: d.transactionHash ?? null });
+          setTopupStep({
+            type: 'receipt',
+            sessionId,
+            actualSeconds,
+            actualUsdc: d.actualChargedUsdc ?? actualUsdc,
+            txHash: d.transactionHash ?? null,
+          });
         }
       } catch { /* keep polling */ }
-    }, 3000);
+    }, 5000);
     return () => clearInterval(stopPoll);
   }, [topupStep]);
 
