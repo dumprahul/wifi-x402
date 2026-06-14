@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const RELAYER_URL = 'https://relayer.1shotapi.com/relayers';
+// Base Sepolia uses the dev endpoint
+const RELAYER_URL = 'https://relayer.1shotapi.dev/relayers';
 
 export async function GET(
   _req: NextRequest,
@@ -16,7 +17,7 @@ export async function GET(
         jsonrpc: '2.0',
         id: 1,
         method: 'relayer_getStatus',
-        params: taskId,
+        params: { id: taskId, logs: false },
       }),
     });
     const data = await res.json();
