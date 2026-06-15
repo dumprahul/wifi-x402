@@ -77,6 +77,7 @@ export async function send7710Transaction(opts: {
   context?: string;
   destinationUrl?: string;
   memo?: string;
+  authorizations?: unknown[];
 }): Promise<string> {
   const taskId = await rpc<string>(
     'relayer_send7710Transaction',
@@ -85,6 +86,7 @@ export async function send7710Transaction(opts: {
       transactions: [{ permissionContext: opts.delegations, executions: opts.executions }],
       ...(opts.context && { context: opts.context }),
       ...(opts.destinationUrl && { destinationUrl: opts.destinationUrl }),
+      ...(opts.authorizations?.length && { authorizations: opts.authorizations }),
       memo: opts.memo ?? 'wifix402-wifi-access',
     },
     opts.chainId,

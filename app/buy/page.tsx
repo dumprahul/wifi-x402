@@ -8,7 +8,7 @@ import { decodeDelegations } from '@metamask/smart-accounts-kit/utils';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import dynamic from 'next/dynamic';
-import { PLANS, USDC_ADDRESS, CHAIN_ID_HEX, TOPUP_OPTIONS } from '@/utils/constants';
+import { PLANS, USDC_ADDRESS, CHAIN_ID_HEX, TOPUP_OPTIONS, HYBRID_DELEGATOR_IMPL } from '@/utils/constants';
 import { toRelayerJson } from '@/utils/relayer';
 
 const Aurora = dynamic(() => import('@/components/Aurora'), { ssr: false });
@@ -286,7 +286,20 @@ export default function BuyPage() {
       const context = granted[0]?.context;
       if (!context) throw new Error('MetaMask did not return permission context');
       const delegations = decodeDelegations(context).map(d => toRelayerJson(d));
-      const res = await fetch('/api/topup/delegate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ wallet: addr, minutes: option.minutes, delegations, feeCollector: relayInfo.feeCollector, feeAmountAtoms: relayInfo.feeAmountAtoms }) });
+
+      // EIP-7702: upgrade EOA → HybridDeleGator smart account via 1Shot
+      let authorization: unknown = undefined;
+      try {
+        authorization = await window.ethereum!.request({
+          method: 'eth_signAuthorization',
+          params: [{ chainId: base.id, address: HYBRID_DELEGATOR_IMPL }],
+        });
+      } catch {
+        // 7702 signing is best-effort — proceed without it if wallet doesn't support it yet
+        console.warn('[7702] eth_signAuthorization not supported, continuing without 7702 upgrade');
+      }
+
+      const res = await fetch('/api/topup/delegate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ wallet: addr, minutes: option.minutes, delegations, feeCollector: relayInfo.feeCollector, feeAmountAtoms: relayInfo.feeAmountAtoms, authorization: authorization ?? null }) });
       if (!res.ok) throw new Error(`Delegate failed (${res.status}): ${await res.text()}`);
       const data = await res.json() as { sessionId: string };
       setTopupStep({ type: 'ready', option, sessionId: data.sessionId });

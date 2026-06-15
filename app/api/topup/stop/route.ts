@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
 
   console.log(`[Topup/stop] sessionId=${sessionId} actualSec=${actualSeconds} chargeAtoms=${chargeAtoms} feeAtoms=${feeAtoms}`);
 
-  const { delegations } = session.delegation_data as { delegations: unknown[] };
+  const { delegations, authorization } = session.delegation_data as { delegations: unknown[]; authorization?: unknown };
 
   const executions = buildExecutions(
     session.fee_collector as `0x${string}`,
@@ -92,6 +92,7 @@ export async function POST(req: NextRequest) {
       context: sendContext,
       destinationUrl: WEBHOOK_URL,
       memo: `wifix402-topup-stop-${sessionId.slice(0, 8)}-${actualSeconds}s`,
+      authorizations: authorization ? [authorization] : undefined,
     });
     console.log(`[Topup/stop] 1Shot taskId=${taskId}`);
   } catch (err: unknown) {

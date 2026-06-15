@@ -55,9 +55,10 @@ export async function POST(req: NextRequest) {
     delegations?: unknown[];
     feeCollector?: string;
     feeAmountAtoms?: string;
+    authorization?: unknown;
   };
 
-  const { wallet, minutes, delegations, feeCollector, feeAmountAtoms } = body;
+  const { wallet, minutes, delegations, feeCollector, feeAmountAtoms, authorization } = body;
 
   if (!wallet || !minutes || !delegations?.length || !feeCollector || !feeAmountAtoms) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
@@ -77,7 +78,7 @@ export async function POST(req: NextRequest) {
       wallet,
       maxMinutes: minutes,
       ratePerSecondAtoms: TOPUP_RATE_PER_SECOND_ATOMS,
-      delegationData: { delegations, wallet },
+      delegationData: { delegations, wallet, authorization: authorization ?? null },
       feeCollector,
       feeAmountAtoms,
     });
