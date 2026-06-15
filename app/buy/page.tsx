@@ -336,7 +336,7 @@ export default function BuyPage() {
           <div className="absolute top-[50%] left-[-5%] w-[400px] h-[400px] rounded-full bg-blue-400/15 blur-[90px] animate-float" style={{ animationDelay: '2s' }} />
         </div>
         <Aurora colorStops={['#7c3aed', '#06b6d4', '#a855f7']} amplitude={1.4} blend={0.7} speed={0.5} />
-        <div className="absolute inset-0 bg-white/72" />
+        <div className="absolute inset-0 bg-white/65" />
       </div>
 
       {/* ── SAME FLOATING PILL NAVBAR ── */}
@@ -412,35 +412,42 @@ export default function BuyPage() {
                 exit={{ opacity: 0, y: -10 }}
                 className="mb-6"
               >
-                <GlassCard className="p-4 flex flex-wrap items-center justify-between gap-3">
+                {/* Slim pill wallet bar */}
+                <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-3 rounded-2xl bg-white/40 backdrop-blur-2xl border border-white/60 shadow-lg shadow-gray-200/20">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-400 to-cyan-400 flex items-center justify-center shadow-sm">
-                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="5" r="3" stroke="white" strokeWidth="1.5"/><path d="M2 12c0-2.8 2.2-5 5-5s5 2.2 5 5" stroke="white" strokeWidth="1.5" strokeLinecap="round"/></svg>
-                    </div>
-                    <div>
-                      <div className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider">Connected</div>
-                      <div className="font-mono text-gray-700 text-xs">{address.slice(0, 8)}…{address.slice(-6)}</div>
-                    </div>
+                    {/* Animated status dot */}
+                    <span className="relative flex h-2.5 w-2.5">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-60" />
+                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500" />
+                    </span>
+                    <span className="font-mono text-gray-600 text-xs">{address.slice(0, 6)}…{address.slice(-4)}</span>
+                    <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-bold text-blue-600 bg-blue-50/80 px-2.5 py-1 rounded-full border border-blue-100/60">
+                      <svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor"><circle cx="4" cy="4" r="4"/></svg>
+                      Base
+                    </span>
                   </div>
-                  <div className="flex items-center gap-4">
-                    <div className="text-xs px-2.5 py-1 rounded-full bg-blue-50/80 text-blue-600 font-bold border border-blue-100/80">Base Mainnet</div>
-                    {usdcBalance !== null && (
-                      <div className="text-right">
-                        <div className="text-[10px] text-gray-400 mb-0.5">USDC Balance</div>
-                        <div className={`font-black text-sm ${Number(usdcBalance) > 0 ? 'text-green-600' : 'text-red-500'}`}>
-                          {usdcBalance}
-                        </div>
+                  <div className="flex items-center gap-3">
+                    {usdcBalance !== null ? (
+                      <div className={`flex items-center gap-1.5 text-sm font-black ${Number(usdcBalance) > 0 ? 'text-gray-900' : 'text-red-500'}`}>
+                        <span className="text-[10px] font-semibold text-gray-400">USDC</span>
+                        {usdcBalance}
                       </div>
+                    ) : (
+                      <button onClick={() => fetchBalance(address)} className="text-xs text-violet-600 font-semibold hover:text-violet-800 transition-colors">
+                        Load balance
+                      </button>
                     )}
-                    <button onClick={() => address && fetchBalance(address)} className="w-7 h-7 rounded-full bg-white/80 border border-gray-100 text-gray-400 hover:text-gray-700 transition-colors flex items-center justify-center text-base">↻</button>
+                    <button onClick={() => address && fetchBalance(address)} className="w-6 h-6 rounded-full bg-white/70 border border-gray-200/60 text-gray-400 hover:text-gray-700 transition-colors flex items-center justify-center text-xs">↻</button>
                   </div>
-                  {usdcBalance !== null && Number(usdcBalance) === 0 && (
-                    <div className="w-full pt-3 border-t border-gray-100/80 text-amber-600 text-xs flex items-center gap-2">
-                      ⚠ No USDC balance — get Base Sepolia USDC at{' '}
-                      <a href="https://bridge.base.org" target="_blank" rel="noopener noreferrer" className="underline font-semibold hover:text-amber-700">bridge.base.org</a>
-                    </div>
-                  )}
-                </GlassCard>
+                </div>
+                {usdcBalance !== null && Number(usdcBalance) === 0 && (
+                  <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
+                    className="mt-2 px-4 py-2.5 rounded-xl bg-amber-50/80 border border-amber-200/60 text-amber-700 text-xs flex items-center gap-2">
+                    <span>⚠</span>
+                    <span>No USDC on Base — bridge at </span>
+                    <a href="https://bridge.base.org" target="_blank" rel="noopener noreferrer" className="underline font-semibold hover:text-amber-800">bridge.base.org</a>
+                  </motion.div>
+                )}
               </motion.div>
             )}
           </AnimatePresence>
@@ -551,63 +558,132 @@ export default function BuyPage() {
                     const isConfirming = planStep.type === 'confirming' && (planStep as Extract<PlanStep, { type: 'confirming' }>).plan.id === plan.id;
                     const anyBusy = planStep.type === 'purchasing' || planStep.type === 'confirming';
                     const isPopular = 'popular' in plan && plan.popular;
+                    const needsWallet = planStep.type === 'idle' || planStep.type === 'error' || planStep.type === 'connecting';
+
+                    // Per-card accent palette
+                    const accents = [
+                      { pill: 'bg-sky-100 text-sky-600', icon: '#0ea5e9', glow: 'rgba(14,165,233,0.12)', border: 'hover:border-sky-300/60', btnHover: 'hover:bg-sky-900' },
+                      { pill: 'bg-violet-100 text-violet-600', icon: '#7c3aed', glow: 'rgba(124,58,237,0.13)', border: 'hover:border-violet-300/60', btnHover: 'hover:bg-violet-900' },
+                      { pill: 'bg-emerald-100 text-emerald-600', icon: '#10b981', glow: 'rgba(16,185,129,0.12)', border: 'hover:border-emerald-300/60', btnHover: '' },
+                    ][i] ?? { pill: 'bg-gray-100 text-gray-600', icon: '#6b7280', glow: 'transparent', border: '', btnHover: '' };
+
+                    const planIcons = [
+                      // 1 Hour — lightning
+                      <svg key="h" width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M10.5 2L4 10h6l-2.5 6 8-9h-6l1-5z" stroke={accents.icon} strokeWidth="1.6" strokeLinejoin="round"/></svg>,
+                      // 1 Day — sun
+                      <svg key="d" width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="3.5" stroke={accents.icon} strokeWidth="1.6"/><path d="M9 2v2M9 14v2M2 9h2M14 9h2M4.2 4.2l1.4 1.4M12.4 12.4l1.4 1.4M4.2 13.8l1.4-1.4M12.4 5.6l1.4-1.4" stroke={accents.icon} strokeWidth="1.5" strokeLinecap="round"/></svg>,
+                      // 1 Week — star/rocket
+                      <svg key="w" width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2c0 0 4 3 4 7.5S9 16 9 16s-4-2.5-4-6.5S9 2 9 2z" stroke={accents.icon} strokeWidth="1.6"/><circle cx="9" cy="9" r="2" stroke={accents.icon} strokeWidth="1.5"/></svg>,
+                    ];
 
                     return (
-                      <motion.div key={plan.id} initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08, duration: 0.4 }}>
+                      <motion.div key={plan.id} initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.09, duration: 0.45, ease: [0.22,1,0.36,1] }}
+                        className="h-full">
                         {isPopular ? (
-                          <div className="relative rounded-3xl bg-gray-950 border border-gray-800 shadow-2xl shadow-gray-900/30 p-7 flex flex-col gap-5 overflow-hidden">
-                            <div className="absolute inset-0 bg-gradient-to-br from-violet-900/30 via-transparent to-cyan-900/20 pointer-events-none" />
-                            <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-violet-500 to-cyan-500 text-white text-[10px] font-black px-4 py-1 rounded-full shadow-lg tracking-widest">BEST VALUE</div>
-                            <div className="relative">
-                              <div className="text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-3">{plan.description}</div>
-                              <div className="text-5xl font-black text-white">${plan.price_usdc}</div>
-                              <div className="text-xs text-gray-600 mt-1">USDC · fixed price</div>
+                          // Featured dark card
+                          <div className="relative rounded-3xl overflow-hidden flex flex-col p-7 gap-5 h-full"
+                            style={{ background: 'linear-gradient(145deg,#0f0f1a 0%,#1a0a2e 50%,#0a1628 100%)', border: '1px solid rgba(124,58,237,0.35)', boxShadow: '0 25px 60px -10px rgba(124,58,237,0.25), 0 0 0 1px rgba(255,255,255,0.05) inset' }}>
+                            {/* Glow orb */}
+                            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-24 rounded-full blur-3xl pointer-events-none" style={{ background: 'radial-gradient(ellipse,rgba(139,92,246,0.4) 0%,transparent 70%)' }} />
+                            {/* Best value badge */}
+                            <div className="absolute -top-px left-1/2 -translate-x-1/2">
+                              <div className="px-5 py-1 text-[10px] font-black tracking-widest text-white rounded-b-2xl" style={{ background: 'linear-gradient(90deg,#7c3aed,#06b6d4)' }}>BEST VALUE</div>
                             </div>
-                            <div className="relative text-xl font-black text-white">{plan.name}</div>
-                            <div className="relative mt-auto">
+                            {/* Icon */}
+                            <div className="relative mt-3 w-10 h-10 rounded-2xl flex items-center justify-center" style={{ background: 'rgba(139,92,246,0.2)', border: '1px solid rgba(139,92,246,0.3)' }}>
+                              {planIcons[i]}
+                            </div>
+                            {/* Price */}
+                            <div className="relative">
+                              <div className="text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-2">{plan.description}</div>
+                              <div className="text-6xl font-black text-white leading-none" style={{ letterSpacing: '-0.03em' }}>${plan.price_usdc}</div>
+                              <div className="text-xs text-gray-600 mt-1.5">USDC · one-time · no recurring</div>
+                            </div>
+                            <div className="relative text-2xl font-black text-white">{plan.name}</div>
+                            {/* Features */}
+                            <div className="relative space-y-1.5 flex-1">
+                              {['Full speed access', 'x402 + ERC-7710', 'Gasless 1Shot relay'].map(f => (
+                                <div key={f} className="flex items-center gap-2 text-xs text-gray-400">
+                                  <span className="w-4 h-4 rounded-full bg-violet-500/20 flex items-center justify-center text-violet-400 text-[9px]">✓</span>
+                                  {f}
+                                </div>
+                              ))}
+                            </div>
+                            <div className="relative">
                               {isPurchasing || isConfirming ? (
-                                <div className="w-full py-3 rounded-2xl text-center text-sm font-bold bg-white/10 text-white/60 animate-pulse">
+                                <div className="w-full py-3.5 rounded-2xl text-center text-sm font-bold bg-white/10 text-white/50 animate-pulse flex items-center justify-center gap-2">
+                                  <Spinner size={14} color="border-white/40" />
                                   {isPurchasing ? 'Processing…' : 'Confirming…'}
                                 </div>
-                              ) : planStep.type === 'idle' || planStep.type === 'error' || planStep.type === 'connecting' ? (
-                                <button onClick={ensureWallet} disabled={planStep.type === 'connecting'}
-                                  className="w-full h-12 bg-white hover:bg-gray-100 text-gray-900 font-black text-sm rounded-2xl transition-all shadow-lg">
+                              ) : needsWallet ? (
+                                <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
+                                  onClick={ensureWallet} disabled={planStep.type === 'connecting'}
+                                  className="w-full h-12 font-black text-sm rounded-2xl transition-all shadow-xl text-white"
+                                  style={{ background: 'linear-gradient(90deg,#7c3aed,#06b6d4)' }}>
                                   {planStep.type === 'connecting' ? 'Connecting…' : 'Connect MetaMask'}
-                                </button>
+                                </motion.button>
                               ) : (
-                                <button onClick={() => handleBuyPlan(plan)} disabled={anyBusy}
-                                  className="w-full h-12 bg-white hover:bg-gray-100 text-gray-900 font-black text-sm rounded-2xl transition-all shadow-lg">
+                                <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
+                                  onClick={() => handleBuyPlan(plan)} disabled={anyBusy}
+                                  className="w-full h-12 font-black text-sm rounded-2xl transition-all shadow-xl text-white"
+                                  style={{ background: 'linear-gradient(90deg,#7c3aed,#06b6d4)' }}>
                                   Get {plan.name}
-                                </button>
+                                </motion.button>
                               )}
                             </div>
                           </div>
                         ) : (
-                          <GlassCard className="p-7 flex flex-col gap-5 h-full hover:border-gray-300/60 transition-all group">
-                            <div>
-                              <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">{plan.description}</div>
-                              <div className="text-5xl font-black text-gray-900">${plan.price_usdc}</div>
-                              <div className="text-xs text-gray-400 mt-1">USDC · fixed price</div>
+                          // Regular glass card
+                          <motion.div whileHover={{ y: -4, boxShadow: `0 20px 50px -10px ${accents.glow}` }} transition={{ duration: 0.25 }}
+                            className={`relative rounded-3xl bg-white/50 backdrop-blur-2xl border border-white/70 p-7 flex flex-col gap-5 h-full group cursor-default transition-colors duration-300 ${accents.border}`}
+                            style={{ boxShadow: '0 4px 24px -4px rgba(0,0,0,0.06)' }}>
+                            {/* Subtle top-left glow on hover */}
+                            <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                              style={{ background: `radial-gradient(ellipse at 20% 20%, ${accents.glow} 0%, transparent 60%)` }} />
+                            {/* Icon pill */}
+                            <div className="relative flex items-center justify-between">
+                              <div className={`w-10 h-10 rounded-2xl flex items-center justify-center ${accents.pill} bg-opacity-60`}
+                                style={{ background: `${accents.glow}` }}>
+                                {planIcons[i]}
+                              </div>
+                              <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full ${accents.pill}`}>{plan.description}</span>
                             </div>
-                            <div className="text-xl font-black text-gray-800">{plan.name}</div>
-                            <div className="mt-auto">
+                            {/* Price */}
+                            <div className="relative">
+                              <div className="text-6xl font-black text-gray-900 leading-none" style={{ letterSpacing: '-0.03em' }}>${plan.price_usdc}</div>
+                              <div className="text-xs text-gray-400 mt-1.5">USDC · one-time · no recurring</div>
+                            </div>
+                            <div className="relative text-2xl font-black text-gray-800">{plan.name}</div>
+                            {/* Features */}
+                            <div className="relative space-y-1.5 flex-1">
+                              {['Full speed access', 'x402 + ERC-7710', 'Gasless 1Shot relay'].map(f => (
+                                <div key={f} className="flex items-center gap-2 text-xs text-gray-400">
+                                  <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[9px] ${accents.pill}`}>✓</span>
+                                  {f}
+                                </div>
+                              ))}
+                            </div>
+                            <div className="relative mt-auto">
                               {isPurchasing || isConfirming ? (
-                                <div className="w-full py-3 rounded-2xl text-center text-sm font-bold bg-gray-100 text-gray-400 animate-pulse">
+                                <div className="w-full py-3.5 rounded-2xl text-center text-sm font-bold bg-gray-100 text-gray-400 animate-pulse flex items-center justify-center gap-2">
+                                  <Spinner size={14} color="border-gray-400" />
                                   {isPurchasing ? 'Processing…' : 'Confirming…'}
                                 </div>
-                              ) : planStep.type === 'idle' || planStep.type === 'error' || planStep.type === 'connecting' ? (
-                                <button onClick={ensureWallet} disabled={planStep.type === 'connecting'}
-                                  className="w-full h-12 bg-black hover:bg-gray-800 text-white font-black text-sm rounded-2xl transition-all">
+                              ) : needsWallet ? (
+                                <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
+                                  onClick={ensureWallet} disabled={planStep.type === 'connecting'}
+                                  className={`w-full h-12 bg-gray-900 text-white font-black text-sm rounded-2xl transition-all ${accents.btnHover}`}>
                                   {planStep.type === 'connecting' ? 'Connecting…' : 'Connect MetaMask'}
-                                </button>
+                                </motion.button>
                               ) : (
-                                <button onClick={() => handleBuyPlan(plan)} disabled={anyBusy}
-                                  className="w-full h-12 bg-black hover:bg-gray-800 text-white font-black text-sm rounded-2xl transition-all">
+                                <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
+                                  onClick={() => handleBuyPlan(plan)} disabled={anyBusy}
+                                  className={`w-full h-12 bg-gray-900 text-white font-black text-sm rounded-2xl transition-all ${accents.btnHover}`}>
                                   Get {plan.name}
-                                </button>
+                                </motion.button>
                               )}
                             </div>
-                          </GlassCard>
+                          </motion.div>
                         )}
                       </motion.div>
                     );
