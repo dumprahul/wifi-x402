@@ -693,21 +693,13 @@ export default function BuyPage() {
                 {/* Protocol footer */}
                 <div className="grid grid-cols-3 gap-3">
                   {[
-                    { tag: 'ERC-7710', step: '01', label: 'Sign delegation', sub: 'MetaMask issues a scoped permission via EIP-7715 — no private key, no raw transfer.', color: 'violet' },
-                    { tag: 'x402', step: '02', label: 'HTTP 402 gate', sub: 'Server responds 402. Your signed delegation is the payment credential — no checkout.', color: 'cyan' },
-                    { tag: '1Shot', step: '03', label: 'Gasless relay', sub: '1Shot submits the delegation on-chain. Confirmed in seconds. Zero ETH from you.', color: 'fuchsia' },
-                  ].map(({ tag, step, label, sub, color }) => (
-                    <div key={step} className={`relative rounded-2xl bg-white/50 backdrop-blur-xl border border-white/70 p-5 overflow-hidden hover:shadow-lg transition-all duration-300 hover:border-${color}-200/60`}>
-                      <div className={`absolute top-0 right-0 px-3 py-1 text-[9px] font-black tracking-widest rounded-bl-2xl rounded-tr-2xl ${
-                        color === 'violet' ? 'bg-violet-100 text-violet-600' :
-                        color === 'cyan' ? 'bg-cyan-100 text-cyan-700' :
-                        'bg-fuchsia-100 text-fuchsia-600'
-                      }`}>{tag}</div>
-                      <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black text-white mb-4 ${
-                        color === 'violet' ? 'bg-violet-600' :
-                        color === 'cyan' ? 'bg-cyan-600' :
-                        'bg-fuchsia-600'
-                      }`}>{step}</div>
+                    { tag: 'ERC-7710', step: '01', label: 'Sign delegation', sub: 'MetaMask issues a scoped permission via EIP-7715 — no private key, no raw transfer.' },
+                    { tag: 'x402', step: '02', label: 'HTTP 402 gate', sub: 'Server responds 402. Your signed delegation is the payment credential — no checkout.' },
+                    { tag: '1Shot', step: '03', label: 'Gasless relay', sub: '1Shot submits the delegation on-chain. Confirmed in seconds. Zero ETH from you.' },
+                  ].map(({ tag, step, label, sub }) => (
+                    <div key={step} className="relative rounded-2xl bg-white/50 backdrop-blur-xl border border-white/70 p-5 overflow-hidden hover:shadow-lg hover:border-gray-300/60 transition-all duration-300">
+                      <div className="absolute top-0 right-0 px-3 py-1 text-[9px] font-black tracking-widest rounded-bl-2xl rounded-tr-2xl bg-gray-100 text-gray-600">{tag}</div>
+                      <div className="w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black text-white mb-4 bg-gray-900">{step}</div>
                       <div className="font-black text-gray-900 text-sm mb-1.5">{label}</div>
                       <div className="text-gray-400 text-[11px] leading-relaxed">{sub}</div>
                     </div>
@@ -1033,21 +1025,13 @@ export default function BuyPage() {
                 {(topupStep.type === 'idle' || topupStep.type === 'fetching-relay' || topupStep.type === 'pick') && (
                   <div className="grid grid-cols-3 gap-3 mt-4">
                     {[
-                      { tag: 'ERC-7710', step: '01', label: 'Sign delegation', sub: 'Authorize a max spend cap in MetaMask — never executed until you stop.', color: 'violet' },
-                      { tag: 'x402', step: '02', label: 'Start session', sub: 'Server issues an HTTP 402 gate. Your credential opens it — IP whitelisted instantly.', color: 'cyan' },
-                      { tag: '1Shot', step: '03', label: 'Stop & settle', sub: 'Relayer executes on-chain for exact seconds used. Zero gas from you.', color: 'fuchsia' },
-                    ].map(({ tag, step, label, sub, color }) => (
-                      <div key={step} className={`relative rounded-2xl bg-white/50 backdrop-blur-xl border border-white/70 p-5 overflow-hidden group hover:shadow-lg transition-all duration-300 hover:border-${color}-200/60`}>
-                        <div className={`absolute top-0 right-0 px-3 py-1 text-[9px] font-black tracking-widest rounded-bl-2xl rounded-tr-2xl ${
-                          color === 'violet' ? 'bg-violet-100 text-violet-600' :
-                          color === 'cyan' ? 'bg-cyan-100 text-cyan-700' :
-                          'bg-fuchsia-100 text-fuchsia-600'
-                        }`}>{tag}</div>
-                        <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black text-white mb-4 ${
-                          color === 'violet' ? 'bg-violet-600' :
-                          color === 'cyan' ? 'bg-cyan-600' :
-                          'bg-fuchsia-600'
-                        }`}>{step}</div>
+                      { tag: 'ERC-7710', step: '01', label: 'Sign delegation', sub: 'Authorize a max spend cap in MetaMask — never executed until you stop.' },
+                      { tag: 'x402', step: '02', label: 'Start session', sub: 'Server issues an HTTP 402 gate. Your credential opens it — IP whitelisted instantly.' },
+                      { tag: '1Shot', step: '03', label: 'Stop & settle', sub: 'Relayer executes on-chain for exact seconds used. Zero gas from you.' },
+                    ].map(({ tag, step, label, sub }) => (
+                      <div key={step} className="relative rounded-2xl bg-white/50 backdrop-blur-xl border border-white/70 p-5 overflow-hidden hover:shadow-lg hover:border-gray-300/60 transition-all duration-300">
+                        <div className="absolute top-0 right-0 px-3 py-1 text-[9px] font-black tracking-widest rounded-bl-2xl rounded-tr-2xl bg-gray-100 text-gray-600">{tag}</div>
+                        <div className="w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black text-white mb-4 bg-gray-900">{step}</div>
                         <div className="font-black text-gray-900 text-sm mb-1.5">{label}</div>
                         <div className="text-gray-400 text-[11px] leading-relaxed">{sub}</div>
                       </div>
