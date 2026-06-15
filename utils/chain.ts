@@ -1,9 +1,9 @@
 import { createPublicClient, http } from 'viem';
-import { baseSepolia, base } from 'viem/chains';
-import { CHAIN_ID, RPC_URL, USDC_ADDRESS } from './constants';
+import { base } from 'viem/chains';
+import { RPC_URL, USDC_ADDRESS } from './constants';
 
 export function getPublicClient() {
-  const chain = CHAIN_ID === 8453 ? base : baseSepolia;
+  const chain = base;
   return createPublicClient({ chain, transport: http(RPC_URL) });
 }
 

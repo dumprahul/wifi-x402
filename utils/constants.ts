@@ -1,11 +1,10 @@
-// Base mainnet — required by 1Shot relayer
-export const CHAIN_ID = parseInt(process.env.CHAIN_ID || '84532');
-export const CHAIN_ID_HEX = '0x14a34'; // Base Sepolia for now; switch to '0x2105' for mainnet
-export const RPC_URL = process.env.RPC_URL || 'https://sepolia.base.org';
+// Base Mainnet
+export const CHAIN_ID = parseInt(process.env.CHAIN_ID || '8453');
+export const CHAIN_ID_HEX = '0x2105'; // Base Mainnet
+export const RPC_URL = process.env.RPC_URL || 'https://mainnet.base.org';
 
-// USDC on Base Sepolia (testnet)
-// Switch to 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913 for Base mainnet
-export const USDC_ADDRESS = (process.env.USDC_ADDRESS || '0x036CbD53842c5426634e7929541eC2318f3dCF7e') as `0x${string}`;
+// USDC on Base Mainnet
+export const USDC_ADDRESS = (process.env.USDC_ADDRESS || '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913') as `0x${string}`;
 export const USDC_DECIMALS = 6;
 
 // Where payments go

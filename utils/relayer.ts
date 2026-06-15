@@ -1,13 +1,11 @@
 import { bytesToHex } from 'viem/utils';
 
-// Base Sepolia uses the dev endpoint; mainnet uses production
-export function relayerUrl(chainId: string | number): string {
-  return String(chainId) === '84532' || String(chainId) === '11155111'
-    ? 'https://relayer.1shotapi.dev/relayers'
-    : 'https://relayer.1shotapi.com/relayers';
+// Production relayer for Base Mainnet
+export function relayerUrl(_chainId: string | number): string {
+  return 'https://relayer.1shotapi.com/relayers';
 }
 
-async function rpc<T>(method: string, params: unknown, chainId: string | number = '84532'): Promise<T> {
+async function rpc<T>(method: string, params: unknown, chainId: string | number = '8453'): Promise<T> {
   const url = relayerUrl(chainId);
   const res = await fetch(url, {
     method: 'POST',

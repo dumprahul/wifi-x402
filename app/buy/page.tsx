@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { createPublicClient, http, createWalletClient, custom } from 'viem';
-import { baseSepolia } from 'viem/chains';
+import { base } from 'viem/chains';
 import { erc7715ProviderActions } from '@metamask/smart-accounts-kit/actions';
 import { decodeDelegations } from '@metamask/smart-accounts-kit/utils';
 import Link from 'next/link';
@@ -185,7 +185,7 @@ export default function BuyPage() {
 
   const fetchBalance = useCallback(async (addr: string) => {
     try {
-      const pc = createPublicClient({ chain: baseSepolia, transport: http('https://sepolia.base.org') });
+      const pc = createPublicClient({ chain: base, transport: http('https://mainnet.base.org') });
       const bal = await pc.readContract({
         address: USDC_ADDRESS,
         abi: [{ name: 'balanceOf', type: 'function', inputs: [{ type: 'address' }], outputs: [{ type: 'uint256' }] }],
@@ -206,7 +206,7 @@ export default function BuyPage() {
         await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: CHAIN_ID_HEX }] });
       } catch (e: unknown) {
         if ((e as { code?: number }).code === 4902) {
-          await window.ethereum.request({ method: 'wallet_addEthereumChain', params: [{ chainId: CHAIN_ID_HEX, chainName: 'Base Sepolia', nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 }, rpcUrls: ['https://sepolia.base.org'], blockExplorerUrls: ['https://sepolia-explorer.base.org'] }] });
+          await window.ethereum.request({ method: 'wallet_addEthereumChain', params: [{ chainId: CHAIN_ID_HEX, chainName: 'Base', nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 }, rpcUrls: ['https://mainnet.base.org'], blockExplorerUrls: ['https://basescan.org'] }] });
         }
       }
       setAddress(addr); setPlanStep({ type: 'ready', address: addr }); fetchBalance(addr);
@@ -223,7 +223,7 @@ export default function BuyPage() {
     const stage = (s: PurchaseStage) => setPlanStep({ type: 'purchasing', plan, stage: s });
     try {
       stage('Checking USDC balance...');
-      const pc = createPublicClient({ chain: baseSepolia, transport: http('https://sepolia.base.org') });
+      const pc = createPublicClient({ chain: base, transport: http('https://mainnet.base.org') });
       const rawBalance = await pc.readContract({ address: USDC_ADDRESS, abi: [{ name: 'balanceOf', type: 'function', inputs: [{ type: 'address' }], outputs: [{ type: 'uint256' }] }], functionName: 'balanceOf', args: [addr as `0x${string}`] }).catch(() => 0n) as bigint;
       setUsdcBalance((Number(rawBalance) / 1_000_000).toFixed(4));
 
@@ -238,12 +238,12 @@ export default function BuyPage() {
       if (!targetAddress || !feeCollector || !feeAmount) throw new Error('Server 402 missing relay info');
 
       const totalNeeded = BigInt(plan.price_units) + BigInt(feeAmount);
-      if (rawBalance < totalNeeded) throw new Error(`Insufficient USDC.\nHave: ${(Number(rawBalance) / 1e6).toFixed(4)}\nNeed: ${(Number(totalNeeded) / 1e6).toFixed(4)}\n\nGet Base Sepolia USDC at faucet.circle.com`);
+      if (rawBalance < totalNeeded) throw new Error(`Insufficient USDC.\nHave: ${(Number(rawBalance) / 1e6).toFixed(4)}\nNeed: ${(Number(totalNeeded) / 1e6).toFixed(4)}\n\nGet Base USDC from a DEX or bridge at bridge.base.org`);
 
       stage('Sign permission in MetaMask...');
-      const wc = createWalletClient({ chain: baseSepolia, transport: custom(window.ethereum!) });
+      const wc = createWalletClient({ chain: base, transport: custom(window.ethereum!) });
       const wallet7715 = wc.extend(erc7715ProviderActions());
-      const granted = await wallet7715.requestExecutionPermissions([{ chainId: baseSepolia.id, to: targetAddress as `0x${string}`, permission: { type: 'erc20-token-periodic' as const, data: { tokenAddress: USDC_ADDRESS, periodAmount: BigInt(plan.price_units) + BigInt(feeAmount), periodDuration: 86400, justification: `Wifix402 — ${plan.name} WiFi access` }, isAdjustmentAllowed: true }, expiry: Math.floor(Date.now() / 1000) + 600 }]);
+      const granted = await wallet7715.requestExecutionPermissions([{ chainId: base.id, to: targetAddress as `0x${string}`, permission: { type: 'erc20-token-periodic' as const, data: { tokenAddress: USDC_ADDRESS, periodAmount: BigInt(plan.price_units) + BigInt(feeAmount), periodDuration: 86400, justification: `Wifix402 — ${plan.name} WiFi access` }, isAdjustmentAllowed: true }, expiry: Math.floor(Date.now() / 1000) + 600 }]);
       const context = granted[0]?.context;
       if (!context) throw new Error('MetaMask did not return a permission context');
       const delegations = decodeDelegations(context).map(d => toRelayerJson(d));
@@ -279,10 +279,10 @@ export default function BuyPage() {
     if (!addr || !window.ethereum) return;
     setTopupStep({ type: 'delegating', option, relayInfo });
     try {
-      const wc = createWalletClient({ chain: baseSepolia, transport: custom(window.ethereum!) });
+      const wc = createWalletClient({ chain: base, transport: custom(window.ethereum!) });
       const wallet7715 = wc.extend(erc7715ProviderActions());
       const maxAtoms = BigInt(option.maxAtoms) + BigInt(relayInfo.feeAmountAtoms);
-      const granted = await wallet7715.requestExecutionPermissions([{ chainId: baseSepolia.id, to: relayInfo.targetAddress as `0x${string}`, permission: { type: 'erc20-token-periodic' as const, data: { tokenAddress: USDC_ADDRESS, periodAmount: maxAtoms, periodDuration: 86400, justification: `Wifix402 top-up — up to ${option.label} (pay only what you use)` }, isAdjustmentAllowed: false }, expiry: Math.floor(Date.now() / 1000) + option.minutes * 60 + 300 }]);
+      const granted = await wallet7715.requestExecutionPermissions([{ chainId: base.id, to: relayInfo.targetAddress as `0x${string}`, permission: { type: 'erc20-token-periodic' as const, data: { tokenAddress: USDC_ADDRESS, periodAmount: maxAtoms, periodDuration: 86400, justification: `Wifix402 top-up — up to ${option.label} (pay only what you use)` }, isAdjustmentAllowed: false }, expiry: Math.floor(Date.now() / 1000) + option.minutes * 60 + 300 }]);
       const context = granted[0]?.context;
       if (!context) throw new Error('MetaMask did not return permission context');
       const delegations = decodeDelegations(context).map(d => toRelayerJson(d));
@@ -397,7 +397,7 @@ export default function BuyPage() {
           >
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-violet-200/80 bg-white/60 backdrop-blur-md text-violet-600 text-[11px] font-bold tracking-widest mb-5 shadow-sm">
               <span className="w-1.5 h-1.5 rounded-full bg-violet-500 animate-pulse" />
-              x402 · ERC-7710 · 1SHOT RELAYER · BASE SEPOLIA
+              x402 · ERC-7710 · 1SHOT RELAYER · BASE MAINNET
             </div>
             <h1 className="text-4xl md:text-5xl font-black text-black tracking-tight mb-3">Get WiFi Access</h1>
             <p className="text-gray-500 text-sm">Sign once with MetaMask. No gas. No login. Pay only what you use.</p>
@@ -423,7 +423,7 @@ export default function BuyPage() {
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
-                    <div className="text-xs px-2.5 py-1 rounded-full bg-blue-50/80 text-blue-600 font-bold border border-blue-100/80">Base Sepolia</div>
+                    <div className="text-xs px-2.5 py-1 rounded-full bg-blue-50/80 text-blue-600 font-bold border border-blue-100/80">Base Mainnet</div>
                     {usdcBalance !== null && (
                       <div className="text-right">
                         <div className="text-[10px] text-gray-400 mb-0.5">USDC Balance</div>
@@ -437,7 +437,7 @@ export default function BuyPage() {
                   {usdcBalance !== null && Number(usdcBalance) === 0 && (
                     <div className="w-full pt-3 border-t border-gray-100/80 text-amber-600 text-xs flex items-center gap-2">
                       ⚠ No USDC balance — get Base Sepolia USDC at{' '}
-                      <a href="https://faucet.circle.com" target="_blank" rel="noopener noreferrer" className="underline font-semibold hover:text-amber-700">faucet.circle.com</a>
+                      <a href="https://bridge.base.org" target="_blank" rel="noopener noreferrer" className="underline font-semibold hover:text-amber-700">bridge.base.org</a>
                     </div>
                   )}
                 </GlassCard>
@@ -499,7 +499,7 @@ export default function BuyPage() {
                       </motion.div>
                       <div className="text-2xl font-black text-gray-900 mb-2">Access Granted</div>
                       <p className="text-gray-500 text-sm mb-5"><strong className="text-gray-800">{s.plan.name}</strong> plan active · 1Shot relayed your delegation on-chain</p>
-                      {s.txHash && <a href={`https://sepolia.basescan.org/tx/${s.txHash}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-blue-600 hover:text-blue-700 text-xs font-mono bg-blue-50 px-4 py-2 rounded-full border border-blue-100 transition-colors">View on Basescan ↗</a>}
+                      {s.txHash && <a href={`https://basescan.org/tx/${s.txHash}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-blue-600 hover:text-blue-700 text-xs font-mono bg-blue-50 px-4 py-2 rounded-full border border-blue-100 transition-colors">View on Basescan ↗</a>}
                     </GlassCard>
                   );
                 })()}
@@ -933,7 +933,7 @@ export default function BuyPage() {
                       </div>
 
                       {s.txHash && (
-                        <a href={`https://sepolia.basescan.org/tx/${s.txHash}`} target="_blank" rel="noopener noreferrer"
+                        <a href={`https://basescan.org/tx/${s.txHash}`} target="_blank" rel="noopener noreferrer"
                           className="inline-flex items-center gap-1.5 text-blue-600 hover:text-blue-700 text-xs font-mono bg-blue-50 px-4 py-2 rounded-full border border-blue-100 transition-colors mb-6">
                           View tx on Basescan ↗
                         </a>
