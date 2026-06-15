@@ -96,14 +96,21 @@ export default function LandingPage() {
 
       {/* ── AURORA BACKGROUND ── */}
       <div className="fixed inset-0 pointer-events-none z-0">
+        {/* Neon blob orbs behind Aurora for rich colour depth */}
+        <div className="absolute inset-0">
+          <div className="absolute top-[-10%] left-[10%] w-[600px] h-[500px] rounded-full bg-violet-400/25 blur-[120px] animate-float" />
+          <div className="absolute top-[20%] right-[5%] w-[500px] h-[400px] rounded-full bg-cyan-400/20 blur-[100px] animate-float" style={{ animationDelay: '1.5s' }} />
+          <div className="absolute bottom-[10%] left-[30%] w-[700px] h-[350px] rounded-full bg-fuchsia-400/18 blur-[130px] animate-float" style={{ animationDelay: '3s' }} />
+          <div className="absolute top-[50%] left-[-5%] w-[400px] h-[400px] rounded-full bg-blue-400/15 blur-[90px] animate-float" style={{ animationDelay: '2s' }} />
+        </div>
         <Aurora
-          colorStops={['#4f8ef7', '#a78bfa', '#38bdf8']}
-          amplitude={1.2}
-          blend={0.6}
-          speed={0.6}
+          colorStops={['#7c3aed', '#06b6d4', '#a855f7']}
+          amplitude={1.4}
+          blend={0.7}
+          speed={0.5}
         />
-        {/* Soft white overlay so content stays readable */}
-        <div className="absolute inset-0 bg-white/55" />
+        {/* Heavy white overlay — keeps page white but lets neon glow bleed through */}
+        <div className="absolute inset-0 bg-white/72" />
       </div>
 
       {/* ── FLOATING PILL NAVBAR ── */}
@@ -112,20 +119,17 @@ export default function LandingPage() {
           initial={{ y: -30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className={`flex items-center gap-6 px-5 h-13 rounded-full border transition-all duration-500 shadow-xl ${
+          className={`flex items-center gap-6 px-6 rounded-full border transition-all duration-500 ${
             scrolled
-              ? 'bg-white/75 backdrop-blur-2xl border-white/90 shadow-gray-300/50'
-              : 'bg-white/40 backdrop-blur-2xl border-white/60 shadow-gray-200/40'
+              ? 'bg-white/60 backdrop-blur-3xl border-white/70 shadow-2xl shadow-purple-200/30'
+              : 'bg-white/35 backdrop-blur-2xl border-white/50 shadow-xl shadow-violet-100/25'
           }`}
           style={{ height: '52px' }}
         >
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group flex-shrink-0">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center font-black text-white text-xs shadow-md shadow-blue-400/40 group-hover:shadow-blue-500/60 transition-shadow">
-              W
-            </div>
-            <span className="font-black text-gray-900 tracking-tight text-sm">
-              Wifix<span className="text-blue-600">402</span>
+          {/* Logo — text only, no icon */}
+          <Link href="/" className="flex items-center flex-shrink-0">
+            <span className="font-black text-black tracking-tight text-sm">
+              Wifix402
             </span>
           </Link>
 
@@ -133,16 +137,16 @@ export default function LandingPage() {
           <div className="w-px h-5 bg-gray-200/80" />
 
           {/* Links */}
-          <div className="hidden md:flex items-center gap-5 text-xs font-semibold text-gray-500">
+          <div className="hidden md:flex items-center gap-5 text-xs font-semibold text-black/70">
             {[['How it works', '#how-it-works'], ['Features', '#features'], ['Pricing', '#pricing']].map(([label, href]) => (
               <a key={label} href={href}
-                className="hover:text-gray-900 transition-colors relative group">
+                className="hover:text-black transition-colors relative group">
                 {label}
-                <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-blue-500 group-hover:w-full transition-all duration-300" />
+                <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-black group-hover:w-full transition-all duration-300" />
               </a>
             ))}
             <a href="https://github.com/dumprahul/wifi-x402" target="_blank" rel="noopener noreferrer"
-              className="hover:text-gray-900 transition-colors flex items-center gap-1">
+              className="hover:text-black transition-colors flex items-center gap-1">
               GitHub ↗
             </a>
           </div>
@@ -155,7 +159,7 @@ export default function LandingPage() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="h-8 px-4 bg-gray-900 hover:bg-blue-600 text-white text-xs font-bold rounded-full transition-colors shadow-md flex items-center gap-1.5 flex-shrink-0"
+              className="h-8 px-4 bg-black hover:bg-gray-800 text-white text-xs font-bold rounded-full transition-colors shadow-md flex items-center gap-1.5 flex-shrink-0"
             >
               Get Access
               <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="2"><path d="M2 5h6M5 2l3 3-3 3"/></svg>
@@ -187,14 +191,8 @@ export default function LandingPage() {
             className="mb-5"
           >
             <span
-              className="text-7xl md:text-[9rem] lg:text-[10.5rem] font-black tracking-tighter leading-none inline-block"
-              style={{
-                background: 'linear-gradient(135deg, #1d4ed8 0%, #7c3aed 40%, #0891b2 80%, #2563eb 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-                letterSpacing: '-0.04em',
-              }}
+              className="text-7xl md:text-[9rem] lg:text-[10.5rem] font-black tracking-tighter leading-none inline-block text-black"
+              style={{ letterSpacing: '-0.04em' }}
             >
               Wifix402
             </span>
