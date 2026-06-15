@@ -6,13 +6,15 @@ Pay-per-use internet access, settled in USDC on Base — no subscriptions, no ca
 
 ## The Problem
 
-Public WiFi is broken in three ways.
+Every WiFi plan sold today is a package — 1 hour, 1 day, 1 month. Nobody sells you 7 minutes of internet.
 
-**For users** — you either pay a flat subscription for access you don't fully use, hand over card details to a portal you've never heard of, or get locked into venue-specific voucher systems that expire whether you use them or not. There is no way to pay for exactly 12 minutes of internet at an airport or exactly 2 hours at a café. Granular, trustless, metered access doesn't exist.
+If you're at an airport for 20 minutes and need to send one email, you buy a day pass. If you step into a café to check a map, you pay for an hour you won't use. The smallest plan available is almost always more than what you need, and you pay for all of it regardless. There is no middle ground between free (unsecured, unreliable) and a flat package that over-charges for casual use.
 
-**For hotspot operators** — collecting payments means integrating a payment processor, managing subscriptions, handling chargebacks, and paying processing fees. The infrastructure cost to monetize a small hotspot is disproportionate to what it earns. Most don't bother.
+The pricing model exists not because it's fair, but because the infrastructure to charge per-minute or per-second doesn't exist. Traditional payment rails can't settle a $0.004 transaction for 4 minutes of internet — the fees alone would exceed the payment. So operators bundle access into daily or hourly packages, users overpay by default, and anyone who just needs a few minutes has no good option.
 
-**For the broader web3 ecosystem** — there is no working example of programmable money meeting programmable access. Crypto payments exist, but they require gas, wallets with ETH, and manual transaction signing at each step. That's not a user experience anyone tolerates.
+For hotspot operators, the problem runs the other direction. Integrating a payment processor, managing voucher systems, handling chargebacks — the overhead to monetize a small hotspot is disproportionate to what it earns. Most don't bother charging at all, which means the infrastructure goes unmonetized or gets subsidized by the venue.
+
+The result: users overpay for time they don't use, operators can't price access fairly, and there's no protocol-level primitive for metered internet access.
 
 ---
 
