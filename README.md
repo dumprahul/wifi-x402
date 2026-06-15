@@ -1,12 +1,47 @@
 # Wifix402
 
-Programmable WiFi access marketplace — pay-per-use internet sessions settled on-chain via smart delegation, gasless relaying, and HTTP payment channels.
+Pay-per-use internet access, settled in USDC on Base — no subscriptions, no card on file, no checkout. Connect your wallet, get online, pay only for what you use.
 
 ---
 
-## What it does
+## The Problem
 
-Wifix402 lets users purchase WiFi access using USDC on Base. There are no subscriptions and no centralized payment processor. The user delegates a spending cap via their MetaMask wallet, the server gates internet access behind an HTTP 402 payment wall, and on-chain settlement happens automatically via a gasless relayer — the user never needs ETH for gas.
+Public WiFi is broken in three ways.
+
+**For users** — you either pay a flat subscription for access you don't fully use, hand over card details to a portal you've never heard of, or get locked into venue-specific voucher systems that expire whether you use them or not. There is no way to pay for exactly 12 minutes of internet at an airport or exactly 2 hours at a café. Granular, trustless, metered access doesn't exist.
+
+**For hotspot operators** — collecting payments means integrating a payment processor, managing subscriptions, handling chargebacks, and paying processing fees. The infrastructure cost to monetize a small hotspot is disproportionate to what it earns. Most don't bother.
+
+**For the broader web3 ecosystem** — there is no working example of programmable money meeting programmable access. Crypto payments exist, but they require gas, wallets with ETH, and manual transaction signing at each step. That's not a user experience anyone tolerates.
+
+---
+
+## Our Solution
+
+Wifix402 makes internet access work like a metered utility — you pay in USDC for exactly the seconds you were online, settled on-chain, with no ETH required from the user.
+
+The core insight is that three emerging standards — EIP-7715 (execution permissions), EIP-7702 (EOA smart account upgrade), and ERC-7710 (delegation redemption) — can be composed together to build a payment channel for internet access that is trustless, gasless from the user's side, and metered to the second.
+
+Here's what that looks like in practice:
+
+1. **User signs once.** MetaMask issues a scoped USDC spending permission with a hard cap and time limit. No raw approval. No private key exposure. At the same moment, the EOA is upgraded to a smart account via EIP-7702 — no deployment, no ETH, stateless.
+
+2. **Server gates access via HTTP 402.** The hotspot endpoint responds with a standard `402 Payment Required` and a `PAYMENT-REQUIRED` header. The client attaches the signed delegation as `PAYMENT-SIGNATURE` and retries. No checkout, no redirect — the credential is the delegation itself.
+
+3. **1Shot settles on-chain.** When the session ends, the server calculates exact usage (seconds × rate) and submits it to the 1Shot Permissionless Relayer. 1Shot calls `DelegationManager.redeemDelegations()` on Base Mainnet, transfers the precise USDC amount, and pays its own gas — the user needs zero ETH at any point.
+
+The user is never charged more than they used. The operator receives USDC directly. Everything is verifiable on-chain.
+
+---
+
+## What We're Building
+
+Wifix402 is the infrastructure layer for programmable internet access:
+
+- **A metered access protocol** — sessions tracked per second, charged for actual usage, never the full cap
+- **A gasless payment channel** — USDC on Base, settled via 1Shot, no ETH dependency
+- **An open hotspot standard** — any operator can deploy a Wifix402-compatible hotspot; the payment logic is protocol-level, not vendor-specific
+- **A composable primitive** — the delegation + 402 + relay pattern can extend to any access-gated service beyond WiFi
 
 ---
 
