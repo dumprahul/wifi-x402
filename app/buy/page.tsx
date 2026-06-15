@@ -691,23 +691,28 @@ export default function BuyPage() {
                 </div>
 
                 {/* Protocol footer */}
-                <GlassCard className="p-6">
-                  <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-5">How payment works</div>
-                  <div className="grid grid-cols-4 gap-4">
-                    {[
-                      { num: '01', label: 'Connect MetaMask', sub: 'EIP-7715 permission' },
-                      { num: '02', label: 'x402 handshake', sub: '402 → relay info' },
-                      { num: '03', label: 'Sign delegation', sub: 'ERC-7710 scoped' },
-                      { num: '04', label: '1Shot confirms', sub: 'Gasless on-chain' },
-                    ].map(({ num, label, sub }) => (
-                      <div key={num} className="text-center">
-                        <div className="w-8 h-8 rounded-full bg-gray-900 text-white text-xs font-black flex items-center justify-center mx-auto mb-2">{num}</div>
-                        <div className="text-gray-700 text-xs font-bold">{label}</div>
-                        <div className="text-gray-400 text-[10px] mt-0.5">{sub}</div>
-                      </div>
-                    ))}
-                  </div>
-                </GlassCard>
+                <div className="grid grid-cols-3 gap-3">
+                  {[
+                    { tag: 'ERC-7710', step: '01', label: 'Sign delegation', sub: 'MetaMask issues a scoped permission via EIP-7715 — no private key, no raw transfer.', color: 'violet' },
+                    { tag: 'x402', step: '02', label: 'HTTP 402 gate', sub: 'Server responds 402. Your signed delegation is the payment credential — no checkout.', color: 'cyan' },
+                    { tag: '1Shot', step: '03', label: 'Gasless relay', sub: '1Shot submits the delegation on-chain. Confirmed in seconds. Zero ETH from you.', color: 'fuchsia' },
+                  ].map(({ tag, step, label, sub, color }) => (
+                    <div key={step} className={`relative rounded-2xl bg-white/50 backdrop-blur-xl border border-white/70 p-5 overflow-hidden hover:shadow-lg transition-all duration-300 hover:border-${color}-200/60`}>
+                      <div className={`absolute top-0 right-0 px-3 py-1 text-[9px] font-black tracking-widest rounded-bl-2xl rounded-tr-2xl ${
+                        color === 'violet' ? 'bg-violet-100 text-violet-600' :
+                        color === 'cyan' ? 'bg-cyan-100 text-cyan-700' :
+                        'bg-fuchsia-100 text-fuchsia-600'
+                      }`}>{tag}</div>
+                      <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black text-white mb-4 ${
+                        color === 'violet' ? 'bg-violet-600' :
+                        color === 'cyan' ? 'bg-cyan-600' :
+                        'bg-fuchsia-600'
+                      }`}>{step}</div>
+                      <div className="font-black text-gray-900 text-sm mb-1.5">{label}</div>
+                      <div className="text-gray-400 text-[11px] leading-relaxed">{sub}</div>
+                    </div>
+                  ))}
+                </div>
               </motion.div>
             )}
 
@@ -1026,24 +1031,28 @@ export default function BuyPage() {
 
                 {/* Protocol steps footer */}
                 {(topupStep.type === 'idle' || topupStep.type === 'fetching-relay' || topupStep.type === 'pick') && (
-                  <GlassCard className="p-6 mt-4">
-                    <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-5">Top-up: how ERC-7710 variable charging works</div>
-                    <div className="grid grid-cols-5 gap-3">
-                      {[
-                        { num: '01', label: 'Sign delegation', sub: 'Authorize max USDC' },
-                        { num: '02', label: 'Server stores it', sub: 'Not executed yet' },
-                        { num: '03', label: 'x402 start gate', sub: 'Credential proves auth' },
-                        { num: '04', label: 'Use internet', sub: 'Timer runs live' },
-                        { num: '05', label: '1Shot settles', sub: 'Exact amount only' },
-                      ].map(({ num, label, sub }) => (
-                        <div key={num} className="text-center">
-                          <div className="w-7 h-7 rounded-full bg-gray-900 text-white text-[10px] font-black flex items-center justify-center mx-auto mb-2">{num}</div>
-                          <div className="text-gray-700 text-[10px] font-bold">{label}</div>
-                          <div className="text-gray-400 text-[10px] mt-0.5 leading-tight">{sub}</div>
-                        </div>
-                      ))}
-                    </div>
-                  </GlassCard>
+                  <div className="grid grid-cols-3 gap-3 mt-4">
+                    {[
+                      { tag: 'ERC-7710', step: '01', label: 'Sign delegation', sub: 'Authorize a max spend cap in MetaMask — never executed until you stop.', color: 'violet' },
+                      { tag: 'x402', step: '02', label: 'Start session', sub: 'Server issues an HTTP 402 gate. Your credential opens it — IP whitelisted instantly.', color: 'cyan' },
+                      { tag: '1Shot', step: '03', label: 'Stop & settle', sub: 'Relayer executes on-chain for exact seconds used. Zero gas from you.', color: 'fuchsia' },
+                    ].map(({ tag, step, label, sub, color }) => (
+                      <div key={step} className={`relative rounded-2xl bg-white/50 backdrop-blur-xl border border-white/70 p-5 overflow-hidden group hover:shadow-lg transition-all duration-300 hover:border-${color}-200/60`}>
+                        <div className={`absolute top-0 right-0 px-3 py-1 text-[9px] font-black tracking-widest rounded-bl-2xl rounded-tr-2xl ${
+                          color === 'violet' ? 'bg-violet-100 text-violet-600' :
+                          color === 'cyan' ? 'bg-cyan-100 text-cyan-700' :
+                          'bg-fuchsia-100 text-fuchsia-600'
+                        }`}>{tag}</div>
+                        <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black text-white mb-4 ${
+                          color === 'violet' ? 'bg-violet-600' :
+                          color === 'cyan' ? 'bg-cyan-600' :
+                          'bg-fuchsia-600'
+                        }`}>{step}</div>
+                        <div className="font-black text-gray-900 text-sm mb-1.5">{label}</div>
+                        <div className="text-gray-400 text-[11px] leading-relaxed">{sub}</div>
+                      </div>
+                    ))}
+                  </div>
                 )}
               </motion.div>
             )}
