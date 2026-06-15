@@ -8,7 +8,7 @@ import { decodeDelegations } from '@metamask/smart-accounts-kit/utils';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import dynamic from 'next/dynamic';
-import { PLANS, USDC_ADDRESS, CHAIN_ID_HEX, TOPUP_OPTIONS, HYBRID_DELEGATOR_IMPL } from '@/utils/constants';
+import { PLANS, USDC_ADDRESS, CHAIN_ID_HEX, TOPUP_OPTIONS, EIP7702_DELEGATOR_IMPL } from '@/utils/constants';
 import { toRelayerJson } from '@/utils/relayer';
 
 const Aurora = dynamic(() => import('@/components/Aurora'), { ssr: false });
@@ -292,7 +292,7 @@ export default function BuyPage() {
       try {
         authorization = await window.ethereum!.request({
           method: 'eth_signAuthorization',
-          params: [{ chainId: base.id, address: HYBRID_DELEGATOR_IMPL }],
+          params: [{ chainId: base.id, address: EIP7702_DELEGATOR_IMPL }],
         });
       } catch {
         // 7702 signing is best-effort — proceed without it if wallet doesn't support it yet

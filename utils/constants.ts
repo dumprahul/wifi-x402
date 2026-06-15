@@ -1,8 +1,9 @@
 // Base Mainnet
 export const CHAIN_ID = parseInt(process.env.CHAIN_ID || '8453');
 
-// HybridDeleGator implementation on Base Mainnet (from @metamask/smart-accounts-kit v1.3.0)
-export const HYBRID_DELEGATOR_IMPL = '0x48dBe696A4D990079e039489bA2053B36E8FFEC4' as `0x${string}`;
+// EIP7702StatelessDeleGator on Base Mainnet (from @metamask/smart-accounts-kit v1.3.0)
+// Stateless design: uses the EOA as owner directly — no initialize() needed, correct for 7702
+export const EIP7702_DELEGATOR_IMPL = '0x63c0c19a282a1B52b07dD5a65b58948A07DAE32B' as `0x${string}`;
 export const CHAIN_ID_HEX = '0x2105'; // Base Mainnet
 export const RPC_URL = process.env.RPC_URL || 'https://mainnet.base.org';
 
