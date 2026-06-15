@@ -330,13 +330,13 @@ export default function BuyPage() {
       {/* ── SAME AURORA BACKGROUND ── */}
       <div className="fixed inset-0 pointer-events-none z-0">
         <div className="absolute inset-0">
-          <div className="absolute top-[-10%] left-[10%] w-[600px] h-[500px] rounded-full bg-violet-400/25 blur-[120px] animate-float" />
-          <div className="absolute top-[20%] right-[5%] w-[500px] h-[400px] rounded-full bg-cyan-400/20 blur-[100px] animate-float" style={{ animationDelay: '1.5s' }} />
-          <div className="absolute bottom-[10%] left-[30%] w-[700px] h-[350px] rounded-full bg-fuchsia-400/18 blur-[130px] animate-float" style={{ animationDelay: '3s' }} />
-          <div className="absolute top-[50%] left-[-5%] w-[400px] h-[400px] rounded-full bg-blue-400/15 blur-[90px] animate-float" style={{ animationDelay: '2s' }} />
+          <div className="absolute top-[-5%] left-[-5%] w-[700px] h-[600px] rounded-full blur-[140px] animate-float" style={{ background: 'radial-gradient(ellipse,rgba(251,176,120,0.55) 0%,transparent 70%)' }} />
+          <div className="absolute top-[10%] left-[25%] w-[600px] h-[500px] rounded-full blur-[120px] animate-float" style={{ animationDelay: '1s', background: 'radial-gradient(ellipse,rgba(255,240,210,0.5) 0%,transparent 70%)' }} />
+          <div className="absolute top-[0%] right-[-5%] w-[650px] h-[600px] rounded-full blur-[130px] animate-float" style={{ animationDelay: '2s', background: 'radial-gradient(ellipse,rgba(147,197,253,0.55) 0%,transparent 70%)' }} />
+          <div className="absolute bottom-[0%] left-[20%] w-[700px] h-[400px] rounded-full blur-[110px] animate-float" style={{ animationDelay: '3s', background: 'radial-gradient(ellipse,rgba(253,186,140,0.30) 0%,transparent 70%)' }} />
         </div>
-        <Aurora colorStops={['#7c3aed', '#06b6d4', '#a855f7']} amplitude={1.4} blend={0.7} speed={0.5} />
-        <div className="absolute inset-0 bg-white/65" />
+        <Aurora colorStops={['#f4a46a', '#fdf4e3', '#93c5fd']} amplitude={1.1} blend={0.55} speed={0.35} />
+        <div className="absolute inset-0 bg-white/50" />
       </div>
 
       {/* ── SAME FLOATING PILL NAVBAR ── */}
@@ -347,8 +347,8 @@ export default function BuyPage() {
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           className={`flex items-center gap-6 px-6 rounded-full border transition-all duration-500 ${
             scrolled
-              ? 'bg-white/60 backdrop-blur-3xl border-white/70 shadow-2xl shadow-purple-200/30'
-              : 'bg-white/35 backdrop-blur-2xl border-white/50 shadow-xl shadow-violet-100/25'
+              ? 'bg-white/60 backdrop-blur-3xl border-white/70 shadow-2xl shadow-orange-100/40'
+              : 'bg-white/35 backdrop-blur-2xl border-white/50 shadow-xl shadow-orange-50/30'
           }`}
           style={{ height: '52px' }}
         >
