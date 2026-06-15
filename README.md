@@ -199,3 +199,27 @@ Open [http://localhost:3000](http://localhost:3000).
 Top-up sessions: **~$0.001 USDC / minute** (16 atoms/second).
 
 Fixed plans: 1 Hour / 1 Day / 1 Week.
+
+---
+
+## Feedback
+
+Found something unclear, broken, or missing in this doc? Let us know.
+
+**What's hard to understand?**
+- [ ] The protocol flow (7715 → 7702 → x402 → 7710)
+- [ ] How 1Shot handles gas and why the user needs no ETH
+- [ ] The difference between the delegation cap and what actually gets charged
+- [ ] The session lifecycle (delegated → active → stopping → stopped)
+- [ ] Setting up the environment variables locally
+
+**What could be improved?**
+- [ ] More diagrams or visuals
+- [ ] A walkthrough video of an end-to-end session
+- [ ] Clearer explanation of EIP-7702 and what "EOA upgrade" actually means
+- [ ] A troubleshooting section for common errors
+- [ ] Operator setup guide (how to run your own Wifix402 hotspot)
+- [ ] Testnet instructions before going mainnet
+
+**Something else?**
+Open an issue at [github.com/dumprahul/wifi-x402/issues](https://github.com/dumprahul/wifi-x402/issues) or drop a note directly — all feedback is read.
